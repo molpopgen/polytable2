@@ -1,0 +1,145 @@
+#ifndef SEQUENCE_POLYTABLE_HPP_
+#define SEQUENCE_POLYTABLE_HPP_
+
+#include <gsl/gsl_matrix_char.h>
+#include <memory>
+#include <string>
+#include <type_traits>
+#include <utility>
+#include <vector>
+namespace Sequence
+{
+    struct delete_matrix
+    {
+        inline void
+        operator()(gsl_matrix_char *m) const noexcept
+        {
+            gsl_matrix_char_free(m);
+        }
+    };
+
+    template <typename T> struct vector_char_view_wrapper
+    {
+        T view;
+        vector_char_view_wrapper(T t) : view(std::move(t)) {}
+
+        using value_type = char;
+
+        template <typename itr> struct iterator_wrapper
+        {
+            itr x;
+            std::size_t stride;
+			//iterator_wrapper(const iterator_wrapper &) = default;
+			//iterator_wrapper(iterator_wrapper &&) = default;
+            using value_type = typename std::iterator_traits<itr>::value_type;
+			using reference = value_type &;
+			using pointer = value_type *;
+			using difference_type = typename std::iterator_traits<pointer>::difference_type;
+			//using iterator_category = std::random_access_iterator_tag;
+			using iterator_category = std::forward_iterator_tag;
+            inline value_type operator*() { return *x; }
+            inline value_type operator*() const { return *x; }
+            iterator_wrapper(itr t, std::size_t stride_)
+                : x(t), stride(stride_)
+            {
+            }
+            iterator_wrapper &operator++()
+            {
+                x += stride;
+                return *this;
+            }
+            bool
+            operator!=(const iterator_wrapper &rhs)
+            {
+                return this->x != rhs.x;
+            }
+            bool
+            operator<(const iterator_wrapper &rhs)
+            {
+                return this->x < rhs.x;
+            }
+            bool
+            operator>(const iterator_wrapper &rhs)
+            {
+                return this->x > rhs.x;
+            }
+        };
+        using iterator = typename std::
+            conditional<std::is_same<T, gsl_vector_char_view>::value,
+                        iterator_wrapper<char *>,
+                        iterator_wrapper<const char *>>::type;
+
+        using const_iterator = iterator_wrapper<const char *>;
+
+        std::size_t
+        size() const
+        {
+            return view.vector.size;
+        }
+
+        value_type operator[](const std::size_t i) const
+        {
+            return gsl_vector_char_get(&view.vector, i);
+        }
+        iterator
+        begin()
+        {
+            return iterator(view.vector.data, view.vector.stride);
+        }
+        iterator
+        end()
+        {
+            return iterator(view.vector.data
+                                + view.vector.size * view.vector.stride,
+                            view.vector.stride);
+        }
+        const_iterator
+        begin() const
+        {
+            return const_iterator(view.vector.data, view.vector.stride);
+        }
+        const_iterator
+        end() const
+        {
+            return const_iterator(view.vector.data
+                                      + view.vector.size * view.vector.stride,
+                                  view.vector.stride);
+        }
+        const_iterator
+        cbegin() const
+        {
+            return view.vector.data;
+        }
+        const_iterator
+        cend() const
+        {
+            return view.vector.data + view.vector.size * view.vector.stride;
+        }
+    };
+
+    class PolyTable
+    {
+      private:
+        using pimpl_t = std::unique_ptr<gsl_matrix_char, delete_matrix>;
+        pimpl_t impl;
+
+      public:
+        PolyTable(const std::vector<std::pair<double, std::string>> &sites);
+        using view_type = vector_char_view_wrapper<gsl_vector_char_view>;
+        using const_view_type
+            = vector_char_view_wrapper<gsl_vector_char_const_view>;
+        std::size_t numsites() const;
+        std::size_t size() const;
+
+        // Member access
+
+        //! Return the i-th haplotype
+        view_type operator[](const std::size_t i);
+        const_view_type operator[](const std::size_t i) const;
+
+        view_type site(const std::size_t i);
+        const_view_type site(const std::size_t i) const;
+    };
+}
+
+#endif
