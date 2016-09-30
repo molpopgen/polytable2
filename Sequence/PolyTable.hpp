@@ -25,13 +25,14 @@ namespace Sequence
 
         using value_type = char;
 
-        template <typename itr> struct iterator_wrapper
+        //template <typename itr> struct iterator_wrapper
+		struct iterator_wrapper
         {
-            itr x;
+            decltype(view.vector.data) x;
             std::size_t stride;
 			//iterator_wrapper(const iterator_wrapper &) = default;
 			//iterator_wrapper(iterator_wrapper &&) = default;
-            using value_type = typename std::iterator_traits<itr>::value_type;
+            using value_type = typename std::iterator_traits<decltype(x)>::value_type;
 			using reference = value_type &;
 			using pointer = value_type *;
 			using difference_type = typename std::iterator_traits<pointer>::difference_type;
@@ -39,7 +40,7 @@ namespace Sequence
 			using iterator_category = std::forward_iterator_tag;
             inline value_type operator*() { return *x; }
             inline value_type operator*() const { return *x; }
-            iterator_wrapper(itr t, std::size_t stride_)
+            iterator_wrapper(pointer t, std::size_t stride_)
                 : x(t), stride(stride_)
             {
             }
@@ -64,12 +65,9 @@ namespace Sequence
                 return this->x > rhs.x;
             }
         };
-        using iterator = typename std::
-            conditional<std::is_same<T, gsl_vector_char_view>::value,
-                        iterator_wrapper<char *>,
-                        iterator_wrapper<const char *>>::type;
+        using iterator = iterator_wrapper; 
 
-        using const_iterator = iterator_wrapper<const char *>;
+        using const_iterator = typename std::add_const<iterator>::type; 
 
         std::size_t
         size() const
