@@ -51,16 +51,15 @@ namespace Sequence
     PolyTable::site_view
     PolyTable::site(const std::size_t i)
     {
-        return site_view(std::make_pair(
-            positions[i], vector_char_view_wrapper<gsl_vector_char_view>(
-                              gsl_matrix_char_row(impl.get(), i))));
+        return std::make_pair(
+            positions[i], view_wrapper(gsl_matrix_char_row(impl.get(), i)));
     }
 
     PolyTable::const_site_view
     PolyTable::site(const std::size_t i) const
     {
-        return const_site_view(std::make_pair(
-            positions[i], vector_char_view_wrapper<gsl_vector_char_const_view>(
-                              gsl_matrix_char_const_row(impl.get(), i))));
+        return std::make_pair(
+            positions[i],
+            const_view_wrapper(gsl_matrix_char_const_row(impl.get(), i)));
     }
 }

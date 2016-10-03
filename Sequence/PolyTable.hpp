@@ -18,14 +18,13 @@ namespace Sequence
         }
     };
 
-    template <typename T> struct vector_char_view_wrapper
+    template <typename T> struct gsl_vector_view_wrapper
     {
         T view;
-        vector_char_view_wrapper(T t) : view(std::move(t)) {}
+        gsl_vector_view_wrapper(T t) : view(std::move(t)) {}
 
-        using value_type = char;
+		using value_type = typename std::remove_pointer<decltype(view.vector.data)>::type;
 
-        //template <typename itr> struct iterator_wrapper
 		struct iterator_wrapper
         {
             decltype(view.vector.data) x;
@@ -124,12 +123,14 @@ namespace Sequence
 
       public:
         PolyTable(const std::vector<std::pair<double, std::string>> &sites);
-        using haplotype_view = vector_char_view_wrapper<gsl_vector_char_view>;
-        using const_haplotype_view
-            = vector_char_view_wrapper<gsl_vector_char_const_view>;
-        using site_view = std::pair<double,vector_char_view_wrapper<gsl_vector_char_view>>;
+		using view_wrapper = gsl_vector_view_wrapper<gsl_vector_char_view>;
+		using const_view_wrapper 
+            = gsl_vector_view_wrapper<gsl_vector_char_const_view>;
+        using haplotype_view = view_wrapper;
+        using const_haplotype_view = const_view_wrapper;
+        using site_view = std::pair<double,view_wrapper>;
         using const_site_view
-            = std::pair<double,vector_char_view_wrapper<gsl_vector_char_const_view>>;
+            = std::pair<double,const_view_wrapper>;
         std::size_t numsites() const;
         std::size_t size() const;
 
