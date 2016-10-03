@@ -120,23 +120,27 @@ namespace Sequence
       private:
         using pimpl_t = std::unique_ptr<gsl_matrix_char, delete_matrix>;
         pimpl_t impl;
+		std::vector<double> positions;
 
       public:
         PolyTable(const std::vector<std::pair<double, std::string>> &sites);
-        using view_type = vector_char_view_wrapper<gsl_vector_char_view>;
-        using const_view_type
+        using haplotype_view = vector_char_view_wrapper<gsl_vector_char_view>;
+        using const_haplotype_view
             = vector_char_view_wrapper<gsl_vector_char_const_view>;
+        using site_view = std::pair<double,vector_char_view_wrapper<gsl_vector_char_view>>;
+        using const_site_view
+            = std::pair<double,vector_char_view_wrapper<gsl_vector_char_const_view>>;
         std::size_t numsites() const;
         std::size_t size() const;
 
         // Member access
 
         //! Return the i-th haplotype
-        view_type operator[](const std::size_t i);
-        const_view_type operator[](const std::size_t i) const;
+        haplotype_view operator[](const std::size_t i);
+        const_haplotype_view operator[](const std::size_t i) const;
 
-        view_type site(const std::size_t i);
-        const_view_type site(const std::size_t i) const;
+        site_view site(const std::size_t i);
+        const_site_view site(const std::size_t i) const;
     };
 }
 

@@ -37,29 +37,29 @@ main(int argc, char **argv)
             std::cout << typeid(x).name() << '\n';
             // auto v = &x.vector;
 
-            for (std::size_t j = 0; j < x.size(); ++j)
+            for (std::size_t j = 0; j < x.second.size(); ++j)
                 {
-                    std::cout << x[j] << ' ';
+                    std::cout << x.second[j] << ' ';
                 }
             std::cout << '\n';
-            auto y = x.begin();
+            auto y = x.second.begin();
             std::cout << typeid(decltype(y)::value_type()).name() << '\n';
             std::cout << std::iterator_traits<decltype(y)>::value_type()
                       << '\n';
-            for_each(x.begin(), x.end(),
+            for_each(x.second.begin(), x.second.end(),
                      [](const char c) { std::cout << c << ' '; });
             std::cout << '\n';
-            std::copy(x.begin(), x.end(),
+            std::copy(x.second.begin(), x.second.end(),
                       ostream_iterator<char>(std::cout, " -> "));
             std::cout << '\n';
-            std::string s(x.begin(), x.end());
+            std::string s(x.second.begin(), x.second.end());
             std::cout << s << '\n';
             auto zz = std::move(x);
         }
     for (std::size_t i = 0; i < p.numsites(); ++i)
         {
             auto x = p.site(i);
-            for_each(x.begin(), x.end(),
+            for_each(x.second.begin(), x.second.end(),
                      [](const char c) { std::cout << c << ' '; });
             std::cout << '\n';
         }
