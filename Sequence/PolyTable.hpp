@@ -19,7 +19,8 @@ namespace Sequence
     };
 
     template <typename T> struct gsl_vector_view_wrapper
-    {
+	{
+		using element_type = T;
         T view;
         gsl_vector_view_wrapper(T t) : view(std::move(t)) {}
 
@@ -29,8 +30,6 @@ namespace Sequence
         {
             decltype(view.vector.data) x;
             std::size_t stride;
-			//iterator_wrapper(const iterator_wrapper &) = default;
-			//iterator_wrapper(iterator_wrapper &&) = default;
             using value_type = typename std::iterator_traits<decltype(x)>::value_type;
 			using reference = value_type &;
 			using pointer = value_type *;
@@ -124,8 +123,12 @@ namespace Sequence
       public:
         PolyTable(const std::vector<std::pair<double, std::string>> &sites);
 		using view_wrapper = gsl_vector_view_wrapper<gsl_vector_char_view>;
+		static_assert( !std::is_const<typename view_wrapper::element_type>::value,
+				"view_wrapper::element_type must be const");
 		using const_view_wrapper 
             = gsl_vector_view_wrapper<gsl_vector_char_const_view>;
+		static_assert( std::is_const<typename const_view_wrapper::element_type>::value,
+				"const_view_wrapper::element_type must be const");
         using haplotype_view = view_wrapper;
         using const_haplotype_view = const_view_wrapper;
         using site_view = std::pair<double,view_wrapper>;
