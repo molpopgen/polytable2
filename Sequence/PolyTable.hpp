@@ -167,7 +167,9 @@ namespace Sequence
 
       public:
         PolyTable(const std::vector<std::pair<double, std::string>> &sites);
+        //! Copy constructor
         PolyTable(const PolyTable &);
+        //! Move constructor.  t.impl.get() == nullptr after this operation.
         PolyTable(PolyTable &&t);
         //! Alias for data view wrapper
         using view_wrapper = gsl_vector_view_wrapper<gsl_vector_char_view>;
