@@ -167,18 +167,24 @@ namespace Sequence
 
       public:
         PolyTable(const std::vector<std::pair<double, std::string>> &sites);
+		//! Alias for data view wrapper
         using view_wrapper = gsl_vector_view_wrapper<gsl_vector_char_view>;
         static_assert(
             !std::is_const<typename view_wrapper::element_type>::value,
             "view_wrapper::element_type must be const");
-        using const_view_wrapper
+        //! Alias for const data view wrapper
+		using const_view_wrapper
             = gsl_vector_view_wrapper<gsl_vector_char_const_view>;
         static_assert(
             std::is_const<typename const_view_wrapper::element_type>::value,
             "const_view_wrapper::element_type must be const");
-        using haplotype_view = view_wrapper;
+        //! Non-const view for a haplotype/sequence
+		using haplotype_view = view_wrapper;
+		//! Const view for a haplotype/sequence
         using const_haplotype_view = const_view_wrapper;
+		//! Non-const view of a column/variable site
         using site_view = std::pair<double, view_wrapper>;
+		//! Const view of a column/variable site
         using const_site_view = std::pair<double, const_view_wrapper>;
         std::size_t numsites() const;
         std::size_t size() const;
