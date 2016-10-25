@@ -167,35 +167,56 @@ namespace Sequence
 
       public:
         PolyTable(const std::vector<std::pair<double, std::string>> &sites);
-		//! Alias for data view wrapper
+        //! Alias for data view wrapper
         using view_wrapper = gsl_vector_view_wrapper<gsl_vector_char_view>;
         static_assert(
             !std::is_const<typename view_wrapper::element_type>::value,
             "view_wrapper::element_type must be const");
         //! Alias for const data view wrapper
-		using const_view_wrapper
+        using const_view_wrapper
             = gsl_vector_view_wrapper<gsl_vector_char_const_view>;
         static_assert(
             std::is_const<typename const_view_wrapper::element_type>::value,
             "const_view_wrapper::element_type must be const");
         //! Non-const view for a haplotype/sequence
-		using haplotype_view = view_wrapper;
-		//! Const view for a haplotype/sequence
+        using haplotype_view = view_wrapper;
+        //! Const view for a haplotype/sequence
         using const_haplotype_view = const_view_wrapper;
-		//! Non-const view of a column/variable site
+        //! Non-const view of a column/variable site
         using site_view = std::pair<double, view_wrapper>;
-		//! Const view of a column/variable site
-        using const_site_view = std::pair<double, const_view_wrapper>;
+        //! Const view of a column/variable site
+        using const_site_view = std::pair<const double, const_view_wrapper>;
+        //! \return Number of columns (mutation positions)
         std::size_t numsites() const;
+        //! \return Number of rows (sequences)
         std::size_t size() const;
 
         // Member access
 
-        //! Return the i-th haplotype
+        /*!
+         * \returns the i-th sequence as a PolyTable::haplotype_view
+         * \warning Not range-checked
+         */
         haplotype_view operator[](const std::size_t i);
+        /*!
+         * \returns the i-th sequence as a PolyTable::const_haplotype_view
+         * \warning Not range-checked
+         */
         const_haplotype_view operator[](const std::size_t i) const;
 
+		//! Range-checked access to i-th PolyTable::haplotype_view
+		haplotype_view at(const std::size_t i);
+		//! Range-checked access to i-th PolyTable::const_haplotype_view
+		const_haplotype_view at(const std::size_t i) const;
+        /*!
+         * \returns the i-th segregating site as a PolyTable::site_view
+         * \warning Not range-checked
+         */
         site_view site(const std::size_t i);
+        /*!
+         * \returns the i-th segregating site as a PolyTable::const_site_view
+         * \warning Not range-checked
+         */
         const_site_view site(const std::size_t i) const;
     };
 }
