@@ -23,15 +23,32 @@ namespace Sequence
             }
     }
 
+    PolyTable::PolyTable(const PolyTable &t)
+        : impl(gsl_matrix_char_alloc(t.size(), t.numsites())),
+          positions(t.positions)
+    {
+        gsl_matrix_char_memcpy(impl.get(), t.impl.get());
+    }
+
+    PolyTable::PolyTable(PolyTable &&t)
+        : impl(std::move(t.impl)), positions(std::move(t.positions))
+    {
+        t.impl.reset(nullptr);
+    }
+
     std::size_t
     PolyTable::size() const
     {
+        if (impl.get() == nullptr)
+            return 0;
         return impl->size2;
     }
 
     std::size_t
     PolyTable::numsites() const
     {
+        if (impl.get() == nullptr)
+            return 0;
         return impl->size1;
     }
 

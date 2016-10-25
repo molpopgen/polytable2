@@ -63,4 +63,15 @@ main(int argc, char **argv)
                      [](const char c) { std::cout << c << ' '; });
             std::cout << '\n';
         }
+
+    PolyTable y(std::move(p));
+    std::cout << y.size() << ' ' << y.numsites() << '\n';
+    std::cout << p.size() << ' ' << p.numsites() << '\n';
+    for (std::size_t i = 0; i < y.numsites(); ++i)
+        {
+            auto x = y.at_site(i);
+            for_each(x.second.begin(), x.second.end(),
+                     [](const char c) { std::cout << c << ' '; });
+            std::cout << '\n';
+        }
 }

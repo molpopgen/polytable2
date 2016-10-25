@@ -167,6 +167,8 @@ namespace Sequence
 
       public:
         PolyTable(const std::vector<std::pair<double, std::string>> &sites);
+        PolyTable(const PolyTable &);
+        PolyTable(PolyTable &&t);
         //! Alias for data view wrapper
         using view_wrapper = gsl_vector_view_wrapper<gsl_vector_char_view>;
         static_assert(
@@ -204,10 +206,10 @@ namespace Sequence
          */
         const_haplotype_view operator[](const std::size_t i) const;
 
-		//! Range-checked access to i-th PolyTable::haplotype_view
-		haplotype_view at(const std::size_t i);
-		//! Range-checked access to i-th PolyTable::const_haplotype_view
-		const_haplotype_view at(const std::size_t i) const;
+        //! Range-checked access to i-th PolyTable::haplotype_view
+        haplotype_view at(const std::size_t i);
+        //! Range-checked access to i-th PolyTable::const_haplotype_view
+        const_haplotype_view at(const std::size_t i) const;
         /*!
          * \returns the i-th segregating site as a PolyTable::site_view
          * \warning Not range-checked
@@ -218,9 +220,9 @@ namespace Sequence
          * \warning Not range-checked
          */
         const_site_view site(const std::size_t i) const;
-		//! Range-checked access to i-th PolyTable::site_view
+        //! Range-checked access to i-th PolyTable::site_view
         site_view at_site(const std::size_t i);
-		//! Range-checked access to i-th PolyTable::const_site_view
+        //! Range-checked access to i-th PolyTable::const_site_view
         const_site_view at_site(const std::size_t i) const;
     };
 }
