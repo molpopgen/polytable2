@@ -123,11 +123,10 @@ namespace Sequence
     }
 }
 
-
 namespace std
 {
     template <> void swap(Sequence::PolyTable &a, Sequence::PolyTable &b)
 	{
-		Sequence::swap(a,b);
+		a.swap(b);
 	}
 }

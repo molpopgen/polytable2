@@ -232,13 +232,12 @@ namespace Sequence
         //! Swap data
         void swap(PolyTable &t);
 
-        //! Allow ADL to implement a swap
-        friend void swap(PolyTable &a, PolyTable &b);
     };
 }
 
 namespace std
 {
+	//! Specialization of std::swap
     template <> void swap(Sequence::PolyTable &a, Sequence::PolyTable &b);
 }
 
