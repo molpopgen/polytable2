@@ -218,6 +218,10 @@ namespace Sequence
          * \warning Not range-checked
          */
         const_site_view site(const std::size_t i) const;
+		//! Range-checked access to i-th PolyTable::site_view
+        site_view at_site(const std::size_t i);
+		//! Range-checked access to i-th PolyTable::const_site_view
+        const_site_view at_site(const std::size_t i) const;
     };
 }
 

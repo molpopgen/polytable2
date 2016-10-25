@@ -41,19 +41,23 @@ namespace Sequence
             gsl_matrix_char_column(impl.get(), i));
     }
 
-	PolyTable::haplotype_view PolyTable::at(const std::size_t i)
-	{
-		if(i >= this->size()) throw std::out_of_range("PolyTable::at, index out of range");
-		return this->operator[](i);
-	}
+    PolyTable::haplotype_view
+    PolyTable::at(const std::size_t i)
+    {
+        if (i >= this->size())
+            throw std::out_of_range("PolyTable::at, index out of range");
+        return this->operator[](i);
+    }
 
-	PolyTable::const_haplotype_view PolyTable::at(const std::size_t i) const
-	{
-		if(i >= this->size()) throw std::out_of_range("PolyTable::at, index out of range");
-		return this->operator[](i);
-	}
-    
-	PolyTable::const_haplotype_view PolyTable::
+    PolyTable::const_haplotype_view
+    PolyTable::at(const std::size_t i) const
+    {
+        if (i >= this->size())
+            throw std::out_of_range("PolyTable::at, index out of range");
+        return this->operator[](i);
+    }
+
+    PolyTable::const_haplotype_view PolyTable::
     operator[](const std::size_t i) const
     {
         return PolyTable::const_haplotype_view(
@@ -73,5 +77,20 @@ namespace Sequence
         return std::make_pair(
             positions[i],
             const_view_wrapper(gsl_matrix_char_const_row(impl.get(), i)));
+    }
+
+    PolyTable::site_view
+    PolyTable::at_site(const std::size_t i)
+    {
+        if (i >= this->numsites())
+            throw std::out_of_range("PolyTable::at_site, index out of range");
+        return this->site(i);
+    }
+    PolyTable::const_site_view
+    PolyTable::at_site(const std::size_t i) const
+    {
+        if (i >= this->numsites())
+            throw std::out_of_range("PolyTable::at_site, index out of range");
+        return this->site(i);
     }
 }
