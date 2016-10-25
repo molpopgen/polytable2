@@ -74,4 +74,12 @@ main(int argc, char **argv)
                      [](const char c) { std::cout << c << ' '; });
             std::cout << '\n';
         }
+
+	
+    data.emplace_back(0.3, "00001");
+	PolyTable z(data);
+	swap(y,z);
+	std::cout << y.numsites() << ' ' << z.numsites() << '\n';
+	std::swap(y,z);
+	std::cout << y.numsites() << ' ' << z.numsites() << '\n';
 }

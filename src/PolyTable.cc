@@ -110,4 +110,24 @@ namespace Sequence
             throw std::out_of_range("PolyTable::at_site, index out of range");
         return this->site(i);
     }
+    void
+    PolyTable::swap(PolyTable &t)
+    {
+        std::swap(this->impl, t.impl);
+        this->positions.swap(t.positions);
+    }
+    void
+    swap(PolyTable &a, PolyTable &b)
+    {
+        a.swap(b);
+    }
+}
+
+
+namespace std
+{
+    template <> void swap(Sequence::PolyTable &a, Sequence::PolyTable &b)
+	{
+		Sequence::swap(a,b);
+	}
 }

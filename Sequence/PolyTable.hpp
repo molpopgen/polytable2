@@ -226,7 +226,20 @@ namespace Sequence
         site_view at_site(const std::size_t i);
         //! Range-checked access to i-th PolyTable::const_site_view
         const_site_view at_site(const std::size_t i) const;
+
+        // General manipulation
+
+        //! Swap data
+        void swap(PolyTable &t);
+
+        //! Allow ADL to implement a swap
+        friend void swap(PolyTable &a, PolyTable &b);
     };
+}
+
+namespace std
+{
+    template <> void swap(Sequence::PolyTable &a, Sequence::PolyTable &b);
 }
 
 #endif
